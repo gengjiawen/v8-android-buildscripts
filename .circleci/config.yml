@@ -3,21 +3,9 @@ version: 2
 jobs:
   build:
     docker:
-      - image: kudo/ubuntu-nonroot:18.04
-        user: ubuntu
-        environment:
-          DEBIAN_FRONTEND: noninteractive
-          TZ: UTC
-
+      - image: gengjiawen/v8-build:android
     working_directory: ~/v8-android-buildscripts
     steps:
-      - run:
-          name: Setup Ubuntu environment
-          command: |
-            sudo ln -fs /usr/share/zoneinfo/UTC /etc/localtime
-            sudo apt-get update
-            sudo apt-get upgrade -y
-            sudo apt-get install -y apt-utils sudo lsb-core git python nodejs npm wget
 
       - checkout
 
@@ -25,11 +13,6 @@ jobs:
           name: Export settings from npm package
           command: |
             npm run export_npm_env
-
-      - run:
-          name: Setup V8 build environment
-          command: |
-            scripts/setup.sh -r ${V8_VERSION} android
 
       - run:
           name: Patch V8
